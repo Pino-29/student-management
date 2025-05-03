@@ -21,7 +21,7 @@ class StudentController extends Controller
      */
     public function create()
     {
-        //
+        return view("students.create");
     }
 
     /**
@@ -29,7 +29,16 @@ class StudentController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:students,email',
+            'birthday' => 'required|date',
+            'city' => 'required|string|max:255',
+        ]);
+
+        Student::create($request->all());
+
+        return redirect()->route('students.index')->with('success', 'Student created successfully!');
     }
 
     /**
