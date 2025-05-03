@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Student;
-
+use App\Http\Requests\StudentRequest;
 class StudentController extends Controller
 {
     /**
@@ -27,17 +27,9 @@ class StudentController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StudentRequest $request)
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:students,email',
-            'birthday' => 'required|date',
-            'city' => 'required|string|max:255',
-        ]);
-
-        Student::create($request->all());
-
+        Student::create($request->validated());
         return redirect()->route('students.index')->with('success', 'Student created successfully!');
     }
 
@@ -62,17 +54,9 @@ class StudentController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(StudentRequest $request, Student $student)
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:students,email,' . $id,
-            'birthday' => 'required|date',
-            'city' => 'required|string|max:255',
-        ]);
-
-        $student = Student::findOrFail($id);
-        $student->update($request->all());
+        $student->update($request->validated());
 
         return redirect()->route('students.index')->with('success', 'Student updated successfully!');
     }
